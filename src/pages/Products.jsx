@@ -2,7 +2,9 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { products as localProducts, categories } from '../data/products';
 import ProductCard from '../components/ProductCard';
-import { Search, Filter, X, SlidersHorizontal, Loader2 } from 'lucide-react';
+import ProductCardSkeleton from '../components/ProductCardSkeleton';
+import Breadcrumbs from '../components/Breadcrumbs';
+import { Search, Filter, X, SlidersHorizontal, Loader2, ChevronDown, RotateCcw } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getProducts, getCategories } from '../api/service';
 
@@ -21,6 +23,13 @@ export default function Products() {
     minRating: 0,
     sortBy: 'featured'
   });
+
+  // Sync filters with URL params when they change
+  useEffect(() => {
+    const search = searchParams.get('search') || '';
+    const category = searchParams.get('category') || '';
+    setFilters(prev => ({ ...prev, search, category }));
+  }, [searchParams]);
 
   // Load products from JSON Server
   useEffect(() => {
@@ -117,6 +126,7 @@ export default function Products() {
 
   return (
     <div className="products-page">
+      <Breadcrumbs items={[{ label: 'Inicio', path: '/' }, { label: 'Productos' }]} />
       <div className="products-header">
         <h1>🛒 Todos los Productos</h1>
         <p>
@@ -126,128 +136,127 @@ export default function Products() {
       </div>
 
       <div className="products-layout">
-        {/* Filters Sidebar */}
-        <motion.aside
-          className={`filters-sidebar ${showFilters ? 'show' : ''}`}
-          initial={{ x: -300 }}
-          animate={{ x: showFilters ? 0 : -300 }}
-        >
-          <div className="filters-header">
-            <h3><SlidersHorizontal size={20} /> Filtros</h3>
-            <button onClick={() => setShowFilters(false)} className="close-filters">
-              <X size={20} />
-            </button>
-          </div>
-
-          {/* Search */}
-          <div className="filter-group">
-            <label>Buscar</label>
-            <div className="search-input">
-              <Search size={18} />
+        {/* Filtros compactos - barra horizontal */}
+        <div className="products-filters-bar">
+          <div className="filters-bar-row">
+            <div className="filter-search-mini">
+              <Search size={16} />
               <input
                 type="text"
-                placeholder="Producto..."
+                placeholder="Buscar..."
                 value={filters.search}
                 onChange={(e) => setFilters({...filters, search: e.target.value})}
               />
             </div>
-          </div>
-
-          {/* Category */}
-          <div className="filter-group">
-            <label>Categoría</label>
-            <select
-              value={filters.category}
-              onChange={(e) => setFilters({...filters, category: e.target.value})}
-            >
-              <option value="">Todas las categorías</option>
-              {categoriesList.map(cat => (
-                <option key={cat.id || cat.name} value={cat.name}>
-                  {cat.icon} {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Price Range */}
-          <div className="filter-group">
-            <label>Precio: {formatPrice(filters.priceRange[0])} - {formatPrice(filters.priceRange[1])}</label>
-            <input
-              type="range"
-              min="0"
-              max="2000000"
-              step="50000"
-              value={filters.priceRange[1]}
-              onChange={(e) => setFilters({
-                ...filters,
-                priceRange: [0, parseInt(e.target.value)]
-              })}
-            />
-          </div>
-
-          {/* Rating */}
-          <div className="filter-group">
-            <label>Rating mínimo</label>
-            <div className="rating-options">
-              {[0, 3, 4, 4.5].map(r => (
-                <button
-                  key={r}
-                  className={filters.minRating === r ? 'active' : ''}
-                  onClick={() => setFilters({...filters, minRating: r})}
-                >
-                  {r === 0 ? 'Todos' : `⭐ ${r}+`}
-                </button>
-              ))}
+            <div className="filter-select-wrap">
+              <select
+                value={filters.category}
+                onChange={(e) => setFilters({...filters, category: e.target.value})}
+                className="filter-select"
+              >
+                <option value="">Categoría</option>
+                {categoriesList.map(cat => (
+                  <option key={cat.id || cat.name} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+              <ChevronDown size={14} className="filter-select-arrow" />
             </div>
-          </div>
-
-          {/* Sort */}
-          <div className="filter-group">
-            <label>Ordenar por</label>
-            <select
-              value={filters.sortBy}
-              onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+            <div className="filter-select-wrap">
+              <select
+                value={filters.sortBy}
+                onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+                className="filter-select"
+              >
+                <option value="featured">Destacados</option>
+                <option value="price-asc">Precio ↑</option>
+                <option value="price-desc">Precio ↓</option>
+                <option value="rating">Rating</option>
+                <option value="name">Nombre</option>
+              </select>
+              <ChevronDown size={14} className="filter-select-arrow" />
+            </div>
+            <button
+              type="button"
+              className={`filter-more-btn ${showFilters ? 'open' : ''}`}
+              onClick={() => setShowFilters(!showFilters)}
+              aria-expanded={showFilters}
             >
-              <option value="featured">Destacados</option>
-              <option value="price-asc">Precio: Menor a Mayor</option>
-              <option value="price-desc">Precio: Mayor a Menor</option>
-              <option value="rating">Mejor Rating</option>
-              <option value="name">Nombre A-Z</option>
-            </select>
+              <SlidersHorizontal size={16} />
+              Más
+            </button>
+            {(filters.category || filters.search || filters.minRating > 0) && (
+              <button type="button" className="filter-clear-btn" onClick={clearFilters}>
+                <RotateCcw size={14} />
+                Limpiar
+              </button>
+            )}
           </div>
 
-          <button className="clear-filters" onClick={clearFilters}>
-            Limpiar Filtros
-          </button>
-        </motion.aside>
+          {/* Panel desplegable para filtros adicionales */}
+          <motion.div
+            className={`filters-expanded ${showFilters ? 'visible' : ''}`}
+            initial={false}
+            animate={{ height: showFilters ? 'auto' : 0, opacity: showFilters ? 1 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="filters-expanded-inner">
+              <div className="filter-exp-group">
+                <span className="filter-exp-label">Precio hasta</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="2000000"
+                  step="50000"
+                  value={filters.priceRange[1]}
+                  onChange={(e) => setFilters({...filters, priceRange: [0, parseInt(e.target.value)]})}
+                />
+                <span className="filter-exp-value">{formatPrice(filters.priceRange[1])}</span>
+              </div>
+              <div className="filter-exp-group">
+                <span className="filter-exp-label">Rating</span>
+                <div className="filter-rating-pills">
+                  {[0, 3, 4, 4.5].map(r => (
+                    <button
+                      key={r}
+                      type="button"
+                      className={`filter-pill ${filters.minRating === r ? 'active' : ''}`}
+                      onClick={() => setFilters({...filters, minRating: r})}
+                    >
+                      {r === 0 ? 'Todos' : `${r}+ ★`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
-        {/* Products Grid */}
-        <main className="products-main">
-          <div className="products-toolbar">
-            <button className="filter-toggle" onClick={() => setShowFilters(true)}>
-              <Filter size={18} /> Filtros
-            </button>
-            
-            <div className="active-filters">
+          {/* Tags de filtros activos */}
+          {(filters.category || filters.search) && (
+            <div className="filter-tags">
               {filters.category && (
                 <span className="filter-tag">
                   {filters.category}
-                  <X size={14} onClick={() => setFilters({...filters, category: ''})} />
+                  <button type="button" onClick={() => setFilters({...filters, category: ''})} aria-label="Quitar"><X size={12} /></button>
                 </span>
               )}
               {filters.search && (
                 <span className="filter-tag">
                   "{filters.search}"
-                  <X size={14} onClick={() => setFilters({...filters, search: ''})} />
+                  <button type="button" onClick={() => setFilters({...filters, search: ''})} aria-label="Quitar"><X size={12} /></button>
                 </span>
               )}
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Products Grid */}
+        <main className="products-main">
 
           {loading ? (
-            <div className="loading-products">
-              <Loader2 className="spin" size={40} />
-              <p>Cargando productos...</p>
+            <div className="products-grid">
+              {[...Array(6)].map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="no-products">
@@ -256,9 +265,9 @@ export default function Products() {
             </div>
           ) : (
             <div className="products-grid">
-              {filteredProducts.map((product, index) => (
-                <ProductCard key={product.id} product={product} index={index} />
-              ))}
+            {filteredProducts.map((product, index) => (
+              <ProductCard key={product.id} product={product} index={index} />
+            ))}
             </div>
           )}
         </main>

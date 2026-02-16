@@ -1,138 +1,202 @@
-import { MapPin, Users, Award, Truck, Headphones, Shield } from 'lucide-react';
+import { MapPin, Award, Truck, Headphones, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Breadcrumbs from '../components/Breadcrumbs';
+
+// Pegá acá la URL del iframe cuando tengas la dirección exacta
+// (Google Maps → buscar tu dirección → Compartir → Insertar mapa)
+const MAP_EMBED_URL = 'https://maps.google.com/maps?q=Bogota,Colombia&t=&z=13&ie=UTF8&iwloc=&output=embed';
 
 export default function About() {
   return (
     <div className="about-page">
+      <Breadcrumbs items={[{ label: 'Inicio', path: '/' }, { label: 'Nosotros' }]} />
+
       <section className="about-hero">
+        <motion.span
+          className="about-hero-badge"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Nosotros
+        </motion.span>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Conocenos
+          Tecnología con <span className="gradient-text">pasión</span>
         </motion.h1>
         <motion.p
+          className="about-hero-desc"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Somos tu destino número uno para tecnología de última generación
+          Somos tu destino número uno para tecnología de última generación en Colombia
         </motion.p>
       </section>
 
       <section className="about-story">
-        <div className="story-content">
+        <motion.div
+          className="story-content"
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2>Nuestra Historia</h2>
           <p>
-            Fundada en 2020, TechStore nació con una misión clara: 
-            hacer la tecnología más accesible para todos los argentinos.
+            Fundada en 2020, TechStore nació con una misión clara: hacer la tecnología 
+            más accesible para todos los colombianos.
           </p>
           <p>
-            Started desde un pequeño garage, hoy somos referentes en el mercado 
+            Empezamos desde un pequeño espacio, hoy somos referentes en el mercado 
             de tecnología, ofreciendo productos de las mejores marcas 
             con un servicio al cliente excepcional.
           </p>
           <p>
             Creemos que la tecnología tiene el poder de transformar vidas, 
-            y estamos comprometidos a trazer los mejores productos 
-            al mejor precio posible.
+            y estamos comprometidos a traer los mejores productos al mejor precio posible.
           </p>
-        </div>
-        <div className="story-stats">
-          <div className="stat">
-            <span className="stat-number">50K+</span>
-            <span className="stat-label">Clientes satisfechos</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">500+</span>
-            <span className="stat-label">Productos</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">98%</span>
-            <span className="stat-label">好评 Client satisfaction</span>
-          </div>
-          <div className="stat">
-            <span className="stat-number">24/7</span>
-            <span className="stat-label">Soporte</span>
-          </div>
-        </div>
+        </motion.div>
+        <motion.div
+          className="story-stats"
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          {[
+            { number: '50K+', label: 'Clientes satisfechos' },
+            { number: '500+', label: 'Productos' },
+            { number: '98%', label: 'Satisfacción' },
+            { number: '24/7', label: 'Soporte' }
+          ].map((stat, i) => (
+            <div key={i} className="stat-card">
+              <span className="stat-number">{stat.number}</span>
+              <span className="stat-label">{stat.label}</span>
+            </div>
+          ))}
+        </motion.div>
       </section>
 
       <section className="about-values">
-        <h2>¿Por qué elegirnos?</h2>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          ¿Por qué elegirnos?
+        </motion.h2>
         <div className="values-grid">
-          <motion.div
-            className="value-card"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Shield size={40} />
-            <h3>Garantía Oficial</h3>
-            <p>Todos nuestros productos cuentan con garantía oficial del fabricante</p>
-          </motion.div>
-          <motion.div
-            className="value-card"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Truck size={40} />
-            <h3>Envío Rápido</h3>
-            <p>Entregamos en 24-48 horas en todo el país</p>
-          </motion.div>
-          <motion.div
-            className="value-card"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Headphones size={40} />
-            <h3>Soporte 24/7</h3>
-            <p>Nuestro equipo está disponible para ayudarte en cualquier momento</p>
-          </motion.div>
-          <motion.div
-            className="value-card"
-            whileHover={{ scale: 1.05 }}
-          >
-            <Award size={40} />
-            <h3>Mejores Marcas</h3>
-            <p>Trabajamos solo con las marcas más reconocidas del mercado</p>
-          </motion.div>
+          {[
+            { icon: Shield, title: 'Garantía Oficial', desc: 'Todos nuestros productos cuentan con garantía oficial del fabricante' },
+            { icon: Truck, title: 'Envío Rápido', desc: 'Entregamos en 24-48 horas en todo el país' },
+            { icon: Headphones, title: 'Soporte 24/7', desc: 'Nuestro equipo está disponible para ayudarte en cualquier momento' },
+            { icon: Award, title: 'Mejores Marcas', desc: 'Trabajamos solo con las marcas más reconocidas del mercado' }
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              className="value-card"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -6 }}
+            >
+              <div className="value-card-icon">
+                <item.icon size={28} />
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
       <section className="about-team">
-        <h2>Nuestro Equipo</h2>
-        <p>Un grupo de apasionados por la tecnología</p>
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          Nuestro Equipo
+        </motion.h2>
+        <motion.p
+          className="about-team-sub"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          Un grupo de apasionados por la tecnología
+        </motion.p>
         <div className="team-grid">
-          <div className="team-member">
-            <div className="member-avatar">👨‍💻</div>
-            <h3>Carlos Rodríguez</h3>
-            <p>CEO & Fundador</p>
-          </div>
-          <div className="team-member">
-            <div className="member-avatar">👩‍💼</div>
-            <h3>María González</h3>
-            <p>Directora Comercial</p>
-          </div>
-          <div className="team-member">
-            <div className="member-avatar">👨‍🔧</div>
-            <h3>Juan Pérez</h3>
-            <p>Jefe de Tecnología</p>
-          </div>
-          <div className="team-member">
-            <div className="member-avatar">👩‍🎨</div>
-            <h3>Ana López</h3>
-            <p>Diseño UX/UI</p>
-          </div>
+          {[
+            { name: 'Miguel Angel Rocha Coca', role: 'CEO & Fundador', initial: 'M', color: 'primary' },
+            { name: 'Esther Judith', role: 'Directora Comercial', initial: 'E', color: 'secondary' },
+            { name: 'Juan Pérez', role: 'Jefe de Tecnología', initial: 'J', color: 'primary' },
+            { name: 'Ana López', role: 'Diseño UX/UI', initial: 'A', color: 'secondary' }
+          ].map((member, i) => (
+            <motion.div
+              key={i}
+              className="team-member"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -4 }}
+            >
+              <div className={`member-avatar member-avatar--${member.color}`}>{member.initial}</div>
+              <h3>{member.name}</h3>
+              <p>{member.role}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
       <section className="about-location">
-        <h2>📍 Nuestra Ubicación</h2>
-        <div className="location-info">
-          <MapPin size={24} />
-          <div>
-            <p><strong>TechStore</strong></p>
-            <p>Buenos Aires, Argentina</p>
-            <p>Horarios: Lun-Vie 9:00-18:00 | Sáb 10:00-14:00</p>
+        <motion.div
+          className="location-header"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="location-icon-wrap">
+            <MapPin size={28} />
           </div>
-        </div>
+          <div>
+            <h2>Nuestra Ubicación</h2>
+            <p className="location-city">Bogotá, Colombia</p>
+            <p className="location-hours">Lun-Vie 9:00-18:00 · Sáb 10:00-14:00</p>
+          </div>
+        </motion.div>
+        <motion.div
+          className="location-map-wrap"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <iframe
+            src={MAP_EMBED_URL}
+            width="100%"
+            height="320"
+            style={{ border: 0, borderRadius: '16px' }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="TechStore - Bogotá, Colombia"
+          />
+          <a
+            href="https://www.google.com/maps/place/Bogot%C3%A1,+Colombia"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="location-map-link"
+          >
+            Ver en Google Maps
+          </a>
+        </motion.div>
       </section>
     </div>
   );

@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Breadcrumbs from '../components/Breadcrumbs';
 import { CreditCard, Truck, Shield, Check, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { createOrder } from '../api/service';
 
 export default function Checkout() {
   const { cart, cartTotal, clearCart } = useCart();
-  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState('');
@@ -112,6 +112,7 @@ export default function Checkout() {
 
   return (
     <div className="checkout-page">
+      <Breadcrumbs items={[{ label: 'Inicio', path: '/' }, { label: 'Productos', path: '/products' }, { label: 'Checkout' }]} />
       <div className="checkout-header">
         <h1>💳 Finalizar Compra</h1>
       </div>

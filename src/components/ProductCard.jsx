@@ -1,10 +1,13 @@
 import { ShoppingCart, Star, Eye } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import { motion } from 'framer-motion';
 
 export default function ProductCard({ product, index }) {
   const { addToCart } = useCart();
+  const { addToast } = useToast();
   const [isHovered, setIsHovered] = useState(false);
   const [showQuickView, setShowQuickView] = useState(false);
 
@@ -25,7 +28,7 @@ export default function ProductCard({ product, index }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="product-image-container">
+      <div className="product-image-container" onClick={() => setShowQuickView(true)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setShowQuickView(true)}>
         <img src={product.image} alt={product.name} />
         
         {product.featured && <span className="featured-badge">⭐ Destacado</span>}
@@ -38,7 +41,7 @@ export default function ProductCard({ product, index }) {
           <button className="action-btn" onClick={() => setShowQuickView(true)}>
             <Eye size={20} />
           </button>
-          <button className="action-btn primary" onClick={() => addToCart(product)}>
+          <button className="action-btn primary" onClick={() => { addToCart(product); addToast(`¡${product.name} agregado al carrito!`); }}>
             <ShoppingCart size={20} />
           </button>
         </motion.div>
@@ -53,7 +56,9 @@ export default function ProductCard({ product, index }) {
           <span className="reviews">({product.reviews})</span>
         </div>
         
-        <h3>{product.name}</h3>
+        <button type="button" className="product-name-link" onClick={() => setShowQuickView(true)}>
+          <h3>{product.name}</h3>
+        </button>
         <p className="product-description">{product.description}</p>
         
         <div className="product-footer">
@@ -63,34 +68,49 @@ export default function ProductCard({ product, index }) {
           </span>
         </div>
 
-        <button className="add-to-cart-btn" onClick={() => addToCart(product)}>
+        <button className="add-to-cart-btn" onClick={() => { addToCart(product); addToast(`¡${product.name} agregado al carrito!`); }}>
           <ShoppingCart size={18} />
           Agregar al Carrito
         </button>
       </div>
 
       {showQuickView && (
-        <div className="quick-view-overlay" onClick={() => setShowQuickView(false)}>
+        <div className="quick-view-overlay" onClick={() => setShowQuickView(false)} role="dialog" aria-modal="true" aria-label="Vista rápida del producto">
           <motion.div
             className="quick-view-modal"
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="close-quick" onClick={() => setShowQuickView(false)}>×</button>
-            <img src={product.image} alt={product.name} />
+            <button type="button" className="close-quick" onClick={() => setShowQuickView(false)} aria-label="Cerrar">×</button>
+            <div className="quick-view-image">
+              <img src={product.image} alt={product.name} />
+              {product.featured && <span className="quick-view-badge">Destacado</span>}
+            </div>
             <div className="quick-details">
+              <span className="quick-view-category">{product.category}</span>
               <h2>{product.name}</h2>
-              <div className="rating">
-                <Star size={16} fill="#ffd700" color="#ffd700" />
-                <span>{product.rating} ({product.reviews} reseñas)</span>
+              <div className="quick-view-rating">
+                <div className="quick-view-stars">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} size={18} fill={i < Math.round(product.rating) ? '#ffd700' : 'none'} color="#ffd700" strokeWidth={1.5} />
+                  ))}
+                </div>
+                <span className="quick-view-reviews">{product.rating} · {product.reviews} reseñas</span>
               </div>
               <p className="description">{product.description}</p>
-              <p className="category">Categoría: {product.category}</p>
               <p className="price">{formatPrice(product.price)}</p>
-              <button className="btn-primary" onClick={() => { addToCart(product); setShowQuickView(false); }}>
-                Agregar al Carrito
-              </button>
+              <span className="quick-view-stock">{product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}</span>
+              <div className="quick-view-actions">
+                <a href={`/products/${product.id}`} target="_blank" rel="noopener noreferrer" className="btn-secondary" onClick={() => setShowQuickView(false)}>
+                  Ver detalle completo
+                </a>
+                <button type="button" className="btn-primary" onClick={() => { addToCart(product); addToast(`¡${product.name} agregado al carrito!`); setShowQuickView(false); }} disabled={product.stock === 0}>
+                  Agregar al Carrito
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>

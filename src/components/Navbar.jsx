@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, X, Search, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
@@ -8,6 +8,15 @@ export default function Navbar() {
   const { cartCount, setIsCartOpen } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -17,7 +26,7 @@ export default function Navbar() {
           <span>TECH<span className="logo-accent">STORE</span></span>
         </Link>
 
-        <div className="search-bar">
+        <form className="search-bar" onSubmit={handleSearch}>
           <Search size={18} className="search-icon" />
           <input
             type="text"
@@ -25,7 +34,7 @@ export default function Navbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
+        </form>
 
         <div className="nav-links">
           <Link to="/" className="nav-link">Inicio</Link>
