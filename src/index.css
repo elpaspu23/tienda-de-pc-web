@@ -487,6 +487,10 @@ button:disabled,
     .hero h1 {
         font-size: 48px;
     }
+
+    .hero-content {
+        margin: 0 auto;
+    }
 }
 
 /* --- Grid & Cards --- */
