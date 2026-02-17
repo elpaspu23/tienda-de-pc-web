@@ -47,16 +47,16 @@ export default function About() {
         >
           <h2>Nuestra Historia</h2>
           <p>
-            Fundada en 2020, TechStore nació con una misión clara: hacer la tecnología 
+            Fundada en 2020, TechStore nació con una misión clara: hacer la tecnología
             más accesible para todos los colombianos.
           </p>
           <p>
-            Empezamos desde un pequeño espacio, hoy somos referentes en el mercado 
-            de tecnología, ofreciendo productos de las mejores marcas 
+            Empezamos desde un pequeño espacio, hoy somos referentes en el mercado
+            de tecnología, ofreciendo productos de las mejores marcas
             con un servicio al cliente excepcional.
           </p>
           <p>
-            Creemos que la tecnología tiene el poder de transformar vidas, 
+            Creemos que la tecnología tiene el poder de transformar vidas,
             y estamos comprometidos a traer los mejores productos al mejor precio posible.
           </p>
         </motion.div>
@@ -135,8 +135,8 @@ export default function About() {
           {[
             { name: 'Miguel Angel Rocha Coca', role: 'CEO & Fundador', initial: 'M', color: 'primary' },
             { name: 'Esther Judith', role: 'Directora Comercial', initial: 'E', color: 'secondary' },
-            { name: 'Juan Pérez', role: 'Jefe de Tecnología', initial: 'J', color: 'primary' },
-            { name: 'Ana López', role: 'Diseño UX/UI', initial: 'A', color: 'secondary' }
+            { name: 'Sebastian Rocha', role: 'Jefe de Tecnología', initial: 'S', color: 'primary' },
+            { name: 'Ider Rocha', role: 'Diseño UX/UI', initial: 'I', color: 'secondary' }
           ].map((member, i) => (
             <motion.div
               key={i}
