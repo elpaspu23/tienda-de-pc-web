@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { ToastProvider } from './context/ToastContext';
 import Navbar from './components/Navbar';
-// import Cart from './components/Cart';
+import Cart from './components/Cart';
 import CartPage from './pages/CartPage';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -21,7 +21,7 @@ function App() {
         <Router>
           <div className="app">
             <Navbar />
-            {/* <Cart /> Drawer disabled */}
+            <Cart />
             <main>
               <Routes>
                 <Route path="/" element={<Home />} />
