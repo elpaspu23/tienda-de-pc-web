@@ -1,16 +1,24 @@
-import { useState } from 'react';
-import { useCart } from '../context/CartContext';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Breadcrumbs from '../components/Breadcrumbs';
-import { CreditCard, Truck, Shield, Check, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { createOrder } from '../api/service';
+import { MapPin, User, Mail, Phone, CreditCard } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import PaymentMethodSelector from '../components/payment/PaymentMethodSelector';
+import MercadoPagoCardForm from '../components/payment/MercadoPagoCardForm';
+import CountryCodeSelector from '../components/checkout/CountryCodeSelector';
+import OrderSummary from '../components/checkout/OrderSummary';
+import '../checkout-enhanced.css';
+import '../payment.css';
 
 export default function Checkout() {
-  const { cart, cartTotal, clearCart } = useCart();
+  const { cart, cartTotal: total, clearCart } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+
+  const [countryCode, setCountryCode] = useState('+57');
+  const [paymentExtra, setPaymentExtra] = useState({});
 
   const [formData, setFormData] = useState({
     name: '',
@@ -18,321 +26,257 @@ export default function Checkout() {
     phone: '',
     address: '',
     city: '',
-    postalCode: '',
-    paymentMethod: 'mercadopago',
-    cardNumber: '',
-    cardExpiry: '',
-    cardCVV: ''
+    zipCode: '',
+    country: 'Colombia',
+    paymentMethod: 'mercadopago'
   });
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-      minimumFractionDigits: 0
-    }).format(price);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const processOrder = async (extraPaymentData = null) => {
     setIsProcessing(true);
 
-    // Generate order ID
-    const newOrderId = 'ORD-' + Date.now().toString(36).toUpperCase();
-    setOrderId(newOrderId);
+    // Simulate API call
+    const newOrderId = `ORD-${Date.now()}`;
+    setOrderId(newOrderId); // Save order ID
 
-    // Prepare order data
-    const orderData = {
-      orderId: newOrderId,
-      customer: {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
-        city: formData.city,
-        postalCode: formData.postalCode
-      },
-      paymentMethod: formData.paymentMethod,
-      items: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      })),
-      subtotal: cartTotal,
-      shipping: shippingCost,
-      total: total
-    };
-
-    // Save to JSON Server
-    try {
-      await createOrder(orderData);
-      console.log('Order saved to API:', orderData);
-    } catch (error) {
-      console.log('Order saved locally (API not running)');
-    }
+    console.log('Procesando orden:', {
+      ...formData,
+      phone: `${countryCode} ${formData.phone}`,
+      paymentDetails: extraPaymentData || paymentExtra
+    });
 
     // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Simulate invoice generation
+    const generatedInvoiceNumber = `INV-${newOrderId}-001`;
+    setInvoiceNumber(generatedInvoiceNumber);
 
     setOrderComplete(true);
     clearCart();
     setIsProcessing(false);
   };
 
-  if (cart.length === 0 && !orderComplete) {
-    return (
-      <div className="checkout-empty">
-        <h2>Tu carrito está vacío</h2>
-        <p>Agrega productos para continuar</p>
-        <Link to="/products" className="btn-primary">Ver Productos</Link>
-      </div>
-    );
-  }
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+    if (formData.paymentMethod === 'mercadopago') {
+      // If payment is card, it's handled by the card form's onSubmit
+      // We only validate here
+      console.log('Esperando datos de tarjeta...');
+      return;
+    }
+    processOrder();
+  };
 
   if (orderComplete) {
     return (
       <motion.div
-        className="order-success"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
+        className="success-message"
+        style={{ maxWidth: '600px', margin: '4rem auto', textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '1rem', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
       >
-        <div className="success-icon">✓</div>
-        <h2>¡Pedido Confirmado! 🎉</h2>
-        <p className="order-id">Número de orden: <strong>{orderId}</strong></p>
-        <p>Te hemos enviado un email de confirmación a <strong>{formData.email}</strong></p>
-        <p>Recibirás tu pedido en 24-48 horas hábiles.</p>
-        <Link to="/" className="btn-primary">Volver al Inicio</Link>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🎉</div>
+        <h2 className="text-3xl font-bold mb-4 text-gray-900">¡Pedido Confirmado!</h2>
+        <p className="text-xl mb-6">Gracias por tu compra, <strong>{formData.name}</strong></p>
+
+        <div className="bg-gray-50 p-6 rounded-xl mb-6 text-left border border-gray-100">
+          <p className="mb-2"><strong>Número de orden:</strong> {orderId}</p>
+          <p className="mb-2">
+            📄 <strong>Factura generada:</strong> {invoiceNumber}
+          </p>
+          <p className="text-sm text-gray-500">
+            Hemos enviado la factura y confirmación a {formData.email}
+          </p>
+        </div>
+
+        <Link
+          to="/"
+          className="inline-block bg-black text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors"
+        >
+          Volver al Inicio
+        </Link>
       </motion.div>
     );
   }
 
-  const shippingCost = cartTotal > 50000 ? 0 : 2999;
-  const total = cartTotal + shippingCost;
+  if (cart.length === 0) {
+    return (
+      <div className="empty-checkout text-center py-20">
+        <h2 className="text-2xl font-bold mb-4">Tu carrito está vacío</h2>
+        <Link to="/" className="text-emerald-600 font-semibold hover:underline">Volver a la tienda</Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="checkout-page">
-      <Breadcrumbs items={[{ label: 'Inicio', path: '/' }, { label: 'Productos', path: '/products' }, { label: 'Checkout' }]} />
-      <div className="checkout-header">
-        <h1>💳 Finalizar Compra</h1>
-      </div>
-
+    <div className="min-h-screen bg-gray-50 py-12">
       <div className="checkout-layout">
-        <form className="checkout-form" onSubmit={handleSubmit}>
-          {/* Customer Info */}
-          <section className="form-section">
-            <h2><Truck size={20} /> Información de Envío</h2>
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Nombre completo *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="Juan Pérez"
-                />
-              </div>
-              <div className="form-group">
-                <label>Email *</label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  placeholder="juan@email.com"
-                />
-              </div>
-              <div className="form-group">
-                <label>Teléfono *</label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  placeholder="+54 11 1234 5678"
-                />
-              </div>
-              <div className="form-group full">
-                <label>Dirección *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  placeholder="Calle 123, Departamento 4B"
-                />
-              </div>
-              <div className="form-group">
-                <label>Ciudad *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.city}
-                  onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  placeholder="Buenos Aires"
-                />
-              </div>
-              <div className="form-group">
-                <label>Código Postal *</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.postalCode}
-                  onChange={(e) => setFormData({...formData, postalCode: e.target.value})}
-                  placeholder="C1428"
-                />
-              </div>
-            </div>
-          </section>
 
-          {/* Payment */}
-          <section className="form-section">
-            <h2><CreditCard size={20} /> Método de Pago</h2>
-            
-            <div className="payment-methods">
-              <label className={`payment-option ${formData.paymentMethod === 'mercadopago' ? 'selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="mercadopago"
-                  checked={formData.paymentMethod === 'mercadopago'}
-                  onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
-                />
-                <span className="payment-icon">💳</span>
-                <div>
-                  <strong>MercadoPago</strong>
-                  <p>Pagá con QR, tarjeta o saldo</p>
-                </div>
-              </label>
-              
-              <label className={`payment-option ${formData.paymentMethod === 'card' ? 'selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="card"
-                  checked={formData.paymentMethod === 'card'}
-                  onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
-                />
-                <span className="payment-icon">💰</span>
-                <div>
-                  <strong>Tarjeta de Crédito/Débito</strong>
-                  <p>Visa, Mastercard, American Express</p>
-                </div>
-              </label>
+        {/* Left Column: Forms */}
+        <div className="checkout-column-left">
+          <div className="checkout-header mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">Finalizar Compra</h1>
+            <p className="text-gray-600">Completa tu pedido de forma rápida y segura</p>
+          </div>
 
-              <label className={`payment-option ${formData.paymentMethod === 'transfer' ? 'selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="transfer"
-                  checked={formData.paymentMethod === 'transfer'}
-                  onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
-                />
-                <span name="payment-icon">🏦</span>
-                <div>
-                  <strong>Transferencia Bancaria</strong>
-                  <p>5% de descuento adicional</p>
-                </div>
-              </label>
-            </div>
+          <form id="checkout-form" onSubmit={handleSubmit}>
 
-            {formData.paymentMethod === 'card' && (
-              <div className="card-form">
+            {/* Shipping Section */}
+            <section className="checkout-section">
+              <div className="section-header">
+                <div className="header-icon">
+                  <MapPin size={24} />
+                </div>
+                <h2>Información de Envío</h2>
+              </div>
+
+              <div className="form-grid">
                 <div className="form-group full">
-                  <label>Número de tarjeta</label>
-                  <input
-                    type="text"
-                    placeholder="1234 5678 9012 3456"
-                    maxLength="19"
-                  />
+                  <label className="form-label">Nombre completo</label>
+                  <div className="form-input-wrapper">
+                    <User className="input-icon" size={20} />
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder=""
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Vencimiento</label>
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    maxLength="5"
-                  />
+
+                <div className="form-group full">
+                  <label className="form-label">Correo electrónico</label>
+                  <div className="form-input-wrapper">
+                    <Mail className="input-icon" size={20} />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder=""
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>CVV</label>
-                  <input
-                    type="text"
-                    placeholder="123"
-                    maxLength="4"
-                  />
+
+                <div className="form-group full">
+                  <label className="form-label">Teléfono</label>
+                  <div className="phone-input-group">
+                    <CountryCodeSelector value={countryCode} onChange={setCountryCode} />
+                    <div className="form-input-wrapper flex-1">
+                      <Phone className="input-icon" size={20} />
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="form-input"
+                        placeholder=""
+                        required
+                      />
+                    </div>
+                  </div>
+                  <span className="text-xs text-gray-500 mt-1">Formato: {countryCode} {formData.phone}</span>
+                </div>
+
+                <div className="form-group full">
+                  <label className="form-label">Dirección</label>
+                  <div className="form-input-wrapper">
+                    <MapPin className="input-icon" size={20} />
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className="form-input"
+                      placeholder=""
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label className="form-label">Ciudad</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="form-input no-icon"
+                      placeholder="Bogotá"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Código Postal</label>
+                    <input
+                      type="text"
+                      name="zipCode"
+                      value={formData.zipCode}
+                      onChange={handleChange}
+                      className="form-input no-icon"
+                      placeholder="110111"
+                    />
+                  </div>
                 </div>
               </div>
-            )}
+            </section>
 
-            {formData.paymentMethod === 'transfer' && (
-              <div className="transfer-info">
-                <p><strong>Banco:</strong> Banco Santander</p>
-                <p><strong>CBU:</strong> 0000000000000000000000</p>
-                <p><strong>Alias:</strong> techstore.mp</p>
-                <p className="discount">🎉 ¡5% de descuento aplicado!</p>
-              </div>
-            )}
-          </section>
-
-          <button
-            type="submit"
-            className="btn-checkout-submit"
-            disabled={isProcessing}
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="spinner" size={20} />
-                Procesando pago...
-              </>
-            ) : (
-              <>Pagar {formatPrice(total)}</>
-            )}
-          </button>
-
-          <div className="security-badges">
-            <Shield size={16} />
-            <span>Pago 100% seguro</span>
-          </div>
-        </form>
-
-        {/* Order Summary */}
-        <aside className="order-summary">
-          <h3>Resumen del Pedido</h3>
-          <div className="summary-items">
-            {cart.map(item => (
-              <div key={item.id} className="summary-item">
-                <img src={item.image} alt={item.name} />
-                <div>
-                  <p className="item-name">{item.name}</p>
-                  <p className="item-qty">Cantidad: {item.quantity}</p>
+            {/* Payment Section */}
+            <section className="checkout-section mt-8">
+              <div className="section-header">
+                <div className="header-icon">
+                  <CreditCard size={24} />
                 </div>
-                <span>{formatPrice(item.price * item.quantity)}</span>
+                <h2>Método de Pago</h2>
               </div>
-            ))}
-          </div>
 
-          <div className="summary-totals">
-            <div className="summary-row">
-              <span>Subtotal</span>
-              <span>{formatPrice(cartTotal)}</span>
-            </div>
-            <div className="summary-row">
-              <span>Envío</span>
-              <span>{shippingCost === 0 ? 'GRATIS' : formatPrice(shippingCost)}</span>
-            </div>
-            {shippingCost > 0 && (
-              <p className="free-shipping-hint">
-                ¡Agregá {formatPrice(50000 - cartTotal)} más para envío gratis!
-              </p>
+              <PaymentMethodSelector
+                selected={formData.paymentMethod}
+                onSelect={(method) => setFormData({ ...formData, paymentMethod: method })}
+                extraData={paymentExtra}
+                onExtraDataChange={setPaymentExtra}
+              />
+
+              {/* Show Inline Card Form ONLY if MercadoPago is selected */}
+              {formData.paymentMethod === 'mercadopago' && (
+                <MercadoPagoCardForm
+                  amount={total}
+                  onSubmit={(cardData) => processOrder(cardData)}
+                />
+              )}
+
+            </section>
+
+            {/* Show standard submit button ONLY if NOT MercadoPago (card form has its own button) */}
+            {formData.paymentMethod !== 'mercadopago' && (
+              <button
+                type="submit"
+                className="w-full mt-8 bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors shadow-lg"
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Procesando...' : `Pagar $${total.toLocaleString('es-CO')}`}
+              </button>
             )}
-            <div className="summary-row total">
-              <span>Total</span>
-              <span>{formatPrice(total)}</span>
-            </div>
-          </div>
-        </aside>
+
+          </form>
+        </div>
+
+        {/* Right Column: Order Summary */}
+        <div className="checkout-column-right">
+          <OrderSummary cart={cart} total={total} />
+        </div>
+
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": 1,
+      "id": "1",
       "name": "AirPods Pro 2 Gen",
       "description": "Auriculares Bluetooth 5.3 con cancelación de ruido activa,触控操作,续航30小时",
       "price": 15999,
@@ -16,7 +16,7 @@
       "profit": 5000
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "AirPods 3era Gen",
       "description": "Auriculares deportivos resistentes al sudor, sonido HiFi estéreo",
       "price": 12999,
@@ -31,7 +31,7 @@
       "profit": 4000
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "AirPods Pro Clone",
       "description": "1:1 clon con cancelación de ruido, pantalla LED, compatible iOS/Android",
       "price": 8999,
@@ -46,7 +46,7 @@
       "profit": 3000
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "AirPods Max Estilo",
       "description": "Auriculares over-ear premium, cancelación de ruido, 40h batería",
       "price": 24999,
@@ -61,7 +61,7 @@
       "profit": 8000
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "AirPods Sport con Ganchos",
       "description": "Auriculares para running, resistentes al agua IPX7, bluetooth 5.3",
       "price": 7999,
@@ -76,7 +76,7 @@
       "profit": 2500
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Mini AirPods 2",
       "description": "Versión mini ultrachica, sonido clear, carga USB-C",
       "price": 5999,
@@ -91,11 +91,11 @@
       "profit": 2000
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "AirPods con Pantalla LED",
       "description": "Estuche con pantalla显示电量, cancelación de ruido, control táctil",
       "price": 11999,
-      "image": "https://images.unsplash.com/photo-1610433572201-fa95154c694c?w=500",
+      "image": "https://tecnologiaonline.co/wp-content/uploads/2024/07/AIRPODS3PRO.jpg",
       "category": "Auriculares",
       "rating": 4.6,
       "featured": false,
@@ -106,7 +106,7 @@
       "profit": 3500
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "AirPods Inalámbricos + Case Carga",
       "description": "Compatible todos los dispositivos, carga inalámbrica incluida",
       "price": 10999,
@@ -121,8 +121,65 @@
       "profit": 3200
     }
   ],
-  "orders": [],
+  "orders": [
+    {
+      "id": "7511",
+      "orderId": "ORD-MLPP2EUZ",
+      "customer": {
+        "name": "Miguel Angel Rocha Coca",
+        "email": "miguelangelrocharojas321@gmail.com",
+        "phone": "+57 3125274640",
+        "address": "carrera 72l #42 c 17 sur ",
+        "city": "bogota ",
+        "postalCode": "1111"
+      },
+      "paymentMethod": "pse",
+      "items": [
+        {
+          "id": "7",
+          "name": "AirPods con Pantalla LED",
+          "price": 11999,
+          "quantity": 1
+        }
+      ],
+      "subtotal": 11999,
+      "shipping": 2999,
+      "total": 14998,
+      "createdAt": "2026-02-16T21:36:36.539Z",
+      "status": "pending"
+    },
+    {
+      "id": "79a2",
+      "orderId": "ORD-MLPR6J4F",
+      "customer": {
+        "name": "rfgr",
+        "email": "miguelangelrocharojas321@gmail.com",
+        "phone": "sadasd",
+        "address": "asdas",
+        "city": "das",
+        "postalCode": "dasd"
+      },
+      "paymentMethod": "mercadopago",
+      "items": [
+        {
+          "id": "1",
+          "name": "AirPods Pro 2 Gen",
+          "price": 15999,
+          "quantity": 1
+        }
+      ],
+      "subtotal": 15999,
+      "shipping": 2999,
+      "total": 18998,
+      "createdAt": "2026-02-16T22:35:47.919Z",
+      "status": "pending"
+    }
+  ],
   "categories": [
-    { "id": 1, "name": "Auriculares", "icon": "🎧" }
+    {
+      "id": "1",
+      "name": "Auriculares",
+      "icon": "🎧"
+    }
   ]
 }

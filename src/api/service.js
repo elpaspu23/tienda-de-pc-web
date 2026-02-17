@@ -1,5 +1,5 @@
 // TechStore JSON Server API Service
-const API_URL = 'http://localhost:3001';
+const API_URL = 'http://localhost:3002';
 
 // Get all products
 export const getProducts = async () => {

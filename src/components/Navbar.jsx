@@ -43,12 +43,12 @@ export default function Navbar() {
         </div>
 
         <div className="nav-actions">
-          <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
+          <Link to="/cart" className="cart-btn">
             <ShoppingCart size={22} />
             {cartCount > 0 && (
               <span className="cart-badge">{cartCount}</span>
             )}
-          </button>
+          </Link>
 
           <button className="menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}

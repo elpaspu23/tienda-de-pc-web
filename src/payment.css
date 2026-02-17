@@ -1,0 +1,306 @@
+/* Payment Method Selector - Dark Theme */
+
+.pms-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Card */
+.pms-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: #fff;
+    font-family: inherit;
+}
+
+.pms-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.pms-card--selected {
+    border-color: #00ff88 !important;
+    background: rgba(0, 255, 136, 0.04) !important;
+    box-shadow: 0 0 0 4px rgba(0, 255, 136, 0.08), 0 4px 20px rgba(0, 255, 136, 0.1) !important;
+}
+
+/* Left side */
+.pms-card-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Icon */
+.pms-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pms-icon--blue {
+    background: rgba(59, 130, 246, 0.12);
+    color: #60a5fa;
+}
+
+.pms-icon--green {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+}
+
+.pms-icon--purple {
+    background: rgba(168, 85, 247, 0.12);
+    color: #c084fc;
+}
+
+.pms-icon--red {
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+}
+
+.pms-icon--yellow {
+    background: rgba(234, 179, 8, 0.12);
+    color: #fbbf24;
+}
+
+/* Info */
+.pms-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pms-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pms-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.pms-description {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Badges */
+.pms-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pms-badge--blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.pms-badge--green {
+    background: rgba(0, 255, 136, 0.12);
+    color: #00ff88;
+}
+
+.pms-badge--purple {
+    background: rgba(168, 85, 247, 0.15);
+    color: #c084fc;
+}
+
+.pms-badge--yellow {
+    background: rgba(234, 179, 8, 0.15);
+    color: #fbbf24;
+}
+
+/* Card tags (Visa, Mastercard, etc) */
+.pms-cards {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.pms-card-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Check icon */
+.pms-check {
+    color: #00ff88;
+}
+
+/* Expanded content */
+.pms-expanded {
+    overflow: hidden;
+}
+
+.pms-expanded-inner {
+    padding: 16px 20px 20px;
+    margin: -2px 0 0;
+    background: rgba(0, 255, 136, 0.02);
+    border: 2px solid #00ff88;
+    border-top: 1px solid rgba(0, 255, 136, 0.15);
+    border-radius: 0 0 16px 16px;
+}
+
+.pms-expanded-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 12px;
+}
+
+/* Bank grid */
+.pms-banks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.pms-bank-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+
+.pms-bank-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.pms-bank-btn--selected {
+    border-color: #00ff88 !important;
+    background: rgba(0, 255, 136, 0.08) !important;
+    color: #00ff88 !important;
+}
+
+/* Phone input */
+.pms-phone-input-wrap {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.pms-phone-input-wrap:focus-within {
+    border-color: rgba(0, 255, 136, 0.4);
+    box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.08);
+}
+
+.pms-phone-prefix {
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.03);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pms-phone-input {
+    flex: 1;
+    padding: 12px 14px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+    font-family: inherit;
+}
+
+.pms-phone-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Security badge */
+.pms-security {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: rgba(59, 130, 246, 0.06);
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    border-radius: 14px;
+    margin-top: 16px;
+}
+
+.pms-security-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.pms-security-text strong {
+    display: block;
+    font-size: 14px;
+    color: #93c5fd;
+    margin-bottom: 2px;
+}
+
+.pms-security-text span {
+    font-size: 12px;
+    color: rgba(147, 197, 253, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .pms-card {
+        padding: 14px 16px;
+    }
+
+    .pms-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+    }
+
+    .pms-name {
+        font-size: 14px;
+    }
+
+    .pms-banks-grid {
+        grid-template-columns: 1fr;
+    }
+}
