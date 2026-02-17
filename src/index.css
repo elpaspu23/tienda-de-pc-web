@@ -546,35 +546,36 @@ button:disabled,
 
 @media (max-width: 640px) {
     .section-header {
-        align-items: center;
-        text-align: center;
-        flex-direction: column;
-        gap: 15px;
+        align-items: center !important;
+        text-align: center !important;
+        flex-direction: column !important;
+        gap: 15px !important;
     }
 
     .products-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        padding: 10px 0 !important;
     }
 
     .product-info {
-        padding: 12px;
+        padding: 10px !important;
     }
 
     .product-info h3 {
-        font-size: 14px;
-        height: 40px;
-        margin-bottom: 8px;
+        font-size: 13px !important;
+        line-height: 1.2 !important;
+        height: 32px !important;
+        margin-bottom: 6px !important;
     }
 
     .product-price {
-        font-size: 16px;
+        font-size: 15px !important;
     }
 
     .product-description,
     .product-rating {
-        display: none;
-        /* Simplificar visual en móvil */
+        display: none !important;
     }
 }
 
