@@ -485,14 +485,20 @@ button:disabled,
     }
 
     .hero h1 {
-        font-size: 38px;
-        line-height: 1.1;
+        font-size: 32px;
+        line-height: 1.2;
         width: 100%;
         max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        overflow-wrap: break-word;
     }
 
     .hero-content {
         margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
     }
 }
 
