@@ -11,7 +11,7 @@ import ProductDetail from './pages/ProductDetail';
 import Checkout from './pages/Checkout';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import './index.css';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
@@ -33,6 +33,7 @@ function App() {
               </Routes>
             </main>
             <Footer />
+            <Analytics />
           </div>
         </Router>
       </CartProvider>
