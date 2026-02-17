@@ -6,17 +6,84 @@ import ProductCard from '../components/ProductCard';
 import { motion } from 'framer-motion';
 import { getProducts } from '../api/service';
 
-import SeedButton from '../scripts/seedFirebase';
-
 export default function Home() {
   const [products, setProducts] = useState(localProducts);
   const [loading, setLoading] = useState(true);
 
-  // ... (useEffect remains same)
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const data = await getProducts();
+        if (data && data.length > 0) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.log('Using local products');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadProducts();
+  }, []);
+
+  const featuredProducts = useMemo(() => {
+    const featured = products.filter(p => p.featured);
+    if (featured.length >= 6) return featured.slice(0, 6);
+    // Fill remaining slots with top-rated non-featured products
+    const nonFeatured = products
+      .filter(p => !p.featured)
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    return [...featured, ...nonFeatured].slice(0, 6);
+  }, [products]);
+
+  const categoriesWithCount = useMemo(() => {
+    // Count actual products per category
+    const counts = {};
+    products.forEach(p => {
+      if (p.category) counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+
+    // Always show all categories with base counts
+    const allCategories = [
+      { name: 'Gaming', label: 'Gaming', Icon: Gamepad2, gradient: 'gaming', baseCount: 6 },
+      { name: 'Laptops', label: 'Laptops', Icon: Laptop, gradient: 'laptops', baseCount: 5 },
+      { name: 'Phones', label: 'Celulares', Icon: Smartphone, gradient: 'default', baseCount: 5 },
+      { name: 'Audio', label: 'Audio', Icon: Headphones, gradient: 'default', baseCount: 6 },
+      { name: 'Monitors', label: 'Monitores', Icon: Monitor, gradient: 'default', baseCount: 5 },
+      { name: 'Peripherals', label: 'Periféricos', Icon: Keyboard, gradient: 'default', baseCount: 5 },
+      { name: 'Tablets', label: 'Tablets', Icon: Tablet, gradient: 'default', baseCount: 3 },
+      { name: 'Wearables', label: 'Relojes', Icon: Watch, gradient: 'default', baseCount: 4 },
+      { name: 'Components', label: 'Componentes', Icon: Cpu, gradient: 'default', baseCount: 6 }
+    ];
+
+    return allCategories.map(cat => ({
+      ...cat,
+      count: counts[cat.name] || cat.baseCount
+    }));
+  }, [products]);
+
+  // ← Editá este mensaje y la calificación de TechStore (1-5 estrellas)
+  const ourMessage = {
+    rating: 5,
+    message: 'En TechStore nos comprometemos a ofrecerte la mejor tecnología al mejor precio. Tu satisfacción es nuestra prioridad, y trabajamos cada día para superar tus expectativas.',
+    author: 'Equipo TechStore'
+  };
+
+  const customerTestimonials = [
+    { name: 'Marcos R.', rating: 5, text: 'Excelente atención y entrega rapidísima. Recomendado!', avatar: 'M' },
+    { name: 'Sofia L.', rating: 5, text: 'Los mejores precios en tecnología. Ya compré varias veces.', avatar: 'S' },
+    { name: 'Carlos M.', rating: 5, text: 'Producto llegó en perfecto estado. Muy satisfecho.', avatar: 'C' }
+  ];
+
+  const features = [
+    { icon: <Zap size={24} />, title: 'Envío Rápido', desc: 'Entrega en 24-48hs' },
+    { icon: <Shield size={24} />, title: 'Garantía Oficial', desc: 'Todos los productos' },
+    { icon: <Truck size={24} />, title: 'Envío Gratis', desc: 'En pedidos +$50.000' },
+    { icon: <CreditCard size={24} />, title: 'Pago Seguro', desc: 'MercadoPago' }
+  ];
 
   return (
     <div className="home">
-      <SeedButton /> {/* Temporary button for deployment */}
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
