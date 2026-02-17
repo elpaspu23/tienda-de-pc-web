@@ -485,7 +485,10 @@ button:disabled,
     }
 
     .hero h1 {
-        font-size: 48px;
+        font-size: 38px;
+        line-height: 1.1;
+        width: 100%;
+        max-width: 100%;
     }
 
     .hero-content {
