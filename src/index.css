@@ -632,15 +632,18 @@ button:disabled,
 
 .product-footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
 .stock {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
-    font-family: var(--font-numeric);
+    font-family: var(--font-sans);
+    /* Use sans for better readability */
+    font-weight: 500;
 }
 
 .stock.low {
