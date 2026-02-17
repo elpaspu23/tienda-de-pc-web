@@ -1,142 +1,84 @@
-// TechStore JSON Server API Service
-const API_URL = 'http://localhost:3002';
+// TechStore API Service (Firebase Adapter)
+import { getProducts as fbGetProducts, getProductById, getProductsByCategory as fbGetProductsByCategory } from '../firebase/products';
+import { createOrder as fbCreateOrder } from '../firebase/orders';
+
+// Mantenemos la estructura de la API para no romper el frontend
+// Aunque internamente usa Firebase
 
 // Get all products
 export const getProducts = async () => {
-  try {
-    const response = await fetch(`${API_URL}/products`);
-    if (!response.ok) throw new Error('Error fetching products');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
+  return await fbGetProducts();
 };
 
 // Get products by category
 export const getProductsByCategory = async (category) => {
-  try {
-    const response = await fetch(`${API_URL}/products?category=${category}`);
-    if (!response.ok) throw new Error('Error fetching products');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
+  return await fbGetProductsByCategory(category);
 };
 
 // Get single product
 export const getProduct = async (id) => {
-  try {
-    const response = await fetch(`${API_URL}/products/${id}`);
-    if (!response.ok) throw new Error('Error fetching product');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
+  return await getProductById(id);
 };
 
-// Search products
+// Search products (Client-side filtering mainly for Firestore without Algolia)
 export const searchProducts = async (searchTerm) => {
-  try {
-    const response = await fetch(`${API_URL}/products?q=${searchTerm}`);
-    if (!response.ok) throw new Error('Error searching products');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
+  const allProducts = await fbGetProducts();
+  const term = searchTerm.toLowerCase();
+  return allProducts.filter(p =>
+    p.name?.toLowerCase().includes(term) ||
+    p.description?.toLowerCase().includes(term)
+  );
 };
 
-// Add product (admin)
+// Add product (Simulation or requires Auth)
 export const addProduct = async (product) => {
-  try {
-    const response = await fetch(`${API_URL}/products`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(product)
-    });
-    if (!response.ok) throw new Error('Error adding product');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
+  console.warn("addProduct not fully implemented in Firebase migration yet");
+  return null;
 };
 
-// Update product (admin)
+// Update product
 export const updateProduct = async (id, product) => {
-  try {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(product)
-    });
-    if (!response.ok) throw new Error('Error updating product');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
-  }
+  console.warn("updateProduct not fully implemented");
+  return null;
 };
 
-// Delete product (admin)
+// Delete product
 export const deleteProduct = async (id) => {
-  try {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-      method: 'DELETE'
-    });
-    return response.ok;
-  } catch (error) {
-    console.error('Error:', error);
-    return false;
-  }
+  console.warn("deleteProduct not fully implemented");
+  return false;
 };
 
 // Create order
 export const createOrder = async (order) => {
-  try {
-    const orderData = {
-      ...order,
-      createdAt: new Date().toISOString(),
-      status: 'pending'
-    };
-    const response = await fetch(`${API_URL}/orders`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    });
-    if (!response.ok) throw new Error('Error creating order');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return null;
+  const result = await fbCreateOrder(order);
+  if (result.success) {
+    // Enviar correo (Funciona en Vercel, en local requiere 'vercel dev')
+    try {
+      fetch('/api/send-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...order, id: result.id })
+      }).catch(err => console.warn("Email trigger warning:", err));
+    } catch (e) {
+      console.warn("Email trigger failed:", e);
+    }
+
+    return { ...order, id: result.id };
   }
+  return null;
 };
 
-// Get all orders
+// Get all orders (Simulation)
 export const getOrders = async () => {
-  try {
-    const response = await fetch(`${API_URL}/orders`);
-    if (!response.ok) throw new Error('Error fetching orders');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
+  console.warn("getOrders not implemented for public client");
+  return [];
 };
 
-// Get categories
+// Get categories (Derived from products for now)
 export const getCategories = async () => {
-  try {
-    const response = await fetch(`${API_URL}/categories`);
-    if (!response.ok) throw new Error('Error fetching categories');
-    return await response.json();
-  } catch (error) {
-    console.error('Error:', error);
-    return [];
-  }
+  const products = await fbGetProducts();
+  const categories = [...new Set(products.map(p => p.category))];
+  return categories;
 };
 
 export default {
