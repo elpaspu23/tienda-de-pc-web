@@ -4072,3 +4072,126 @@ button:disabled,
     color: white;
     font-weight: 500;
 }
+
+/* --- Promo Banner --- */
+.promo-banner {
+    padding: 80px 40px;
+    background: var(--bg-primary);
+}
+
+.promo-banner-content {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 204, 255, 0.05));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-2xl);
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    position: relative;
+    overflow: hidden;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.promo-banner-text {
+    flex: 1;
+    z-index: 2;
+}
+
+.promo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 68, 68, 0.2);
+}
+
+.promo-banner-text h2 {
+    font-size: 48px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    background: linear-gradient(to right, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: white;
+}
+
+.promo-banner-text p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    max-width: 500px;
+}
+
+.promo-banner-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.promo-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.promo-stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent-primary);
+    font-family: var(--font-numeric);
+}
+
+.promo-stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+
+/* Mobile Responsiveness for Promo Banner */
+@media (max-width: 900px) {
+    .promo-banner {
+        padding: 40px 20px !important;
+    }
+
+    .promo-banner-content {
+        flex-direction: column !important;
+        padding: 30px 20px !important;
+        text-align: center !important;
+        gap: 30px !important;
+    }
+
+    .promo-banner-text {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .promo-banner-text h2 {
+        font-size: 28px !important;
+        width: 100% !important;
+        overflow-wrap: break-word !important;
+        white-space: normal !important;
+    }
+
+    .promo-banner-text p {
+        font-size: 15px !important;
+    }
+
+    .promo-banner-stats {
+        width: 100% !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        flex-wrap: wrap !important;
+        margin-top: 20px !important;
+    }
+}
