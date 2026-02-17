@@ -85,7 +85,7 @@ export default function PaymentMethodSelector({ selected, onSelect, extraData, o
                                         ? `linear-gradient(135deg, ${method.accentBg}, rgba(255,255,255,0.02))`
                                         : 'rgba(255,255,255,0.03)',
                                     border: `1.5px solid ${isSelected ? method.accent : 'rgba(255,255,255,0.07)'}`,
-                                    borderRadius: isSelected ? '16px 16px 0 0' : '16px',
+                                    borderRadius: '16px',
                                     cursor: 'pointer', transition: 'all 0.22s',
                                     textAlign: 'left',
                                     boxShadow: isSelected ? `0 4px 20px ${method.accentBg}` : 'none',

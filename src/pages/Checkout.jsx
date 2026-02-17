@@ -7,8 +7,8 @@ import PaymentMethodSelector from '../components/payment/PaymentMethodSelector';
 import MercadoPagoCardForm from '../components/payment/MercadoPagoCardForm';
 import CountryCodeSelector from '../components/checkout/CountryCodeSelector';
 import OrderSummary from '../components/checkout/OrderSummary';
-import '../checkout-enhanced.css';
-import '../payment.css';
+import CheckoutBenefits from '../components/checkout/CheckoutBenefits';
+import '../index.css';
 
 export default function Checkout() {
   const { cart, cartTotal: total, clearCart } = useCart();
@@ -37,6 +37,19 @@ export default function Checkout() {
   };
 
   const processOrder = async (extraPaymentData = null) => {
+    // Validate Shipping Fields manually (needed for MercadoPago flow which bypasses form submit)
+    const missing = [];
+    if (!formData.name) missing.push('Nombre');
+    if (!formData.email) missing.push('Email');
+    if (!formData.phone) missing.push('Teléfono');
+    if (!formData.address) missing.push('Dirección');
+    if (!formData.city) missing.push('Ciudad');
+
+    if (missing.length > 0) {
+      alert(`Por favor completa los siguientes datos de envío: ${missing.join(', ')}`);
+      return;
+    }
+
     setIsProcessing(true);
 
     // Simulate API call
@@ -89,17 +102,77 @@ export default function Checkout() {
           <p className="mb-2">
             📄 <strong>Factura generada:</strong> {invoiceNumber}
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-4">
             Hemos enviado la factura y confirmación a {formData.email}
           </p>
+
+          <div style={{ marginTop: '24px' }}>
+            <button
+              onClick={() => alert(`Descargando factura ${invoiceNumber}.pdf... (Simulación)`)}
+              className="download-invoice-btn"
+              style={{
+                width: '100%',
+                padding: '16px',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '12px',
+                color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontFamily: "'DM Sans', sans-serif",
+                fontWeight: 600,
+                fontSize: '15px'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <div style={{
+                background: 'rgba(0,229,160,0.1)',
+                padding: '8px', borderRadius: '8px',
+                color: '#00e5a0', display: 'flex'
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+              </div>
+              Descargar Factura PDF
+            </button>
+            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)', marginTop: '8px', textAlign: 'center' }}>
+              Formato oficial DIAN
+            </p>
+          </div>
         </div>
 
-        <Link
-          to="/"
-          className="inline-block bg-black text-white px-8 py-3 rounded-full font-bold hover:bg-gray-800 transition-colors"
-        >
-          Volver al Inicio
-        </Link>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '24px' }}>
+          <Link
+            to="/"
+            className="flex items-center justify-center gap-2 bg-black text-white px-8 py-4 rounded-xl font-bold hover:bg-gray-800 transition-all hover:scale-[1.02] shadow-lg"
+          >
+            Volver al Inicio
+          </Link>
+
+          <a
+            href="https://wa.me/573001234567"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 bg-white text-gray-900 border border-gray-200 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all hover:scale-[1.02] shadow-sm"
+          >
+            <span style={{ fontSize: '18px' }}>💬</span> Soporte
+          </a>
+        </div>
+
+        <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+          <p className="text-sm text-gray-400">
+            ¿Te gustó tu experiencia? <a href="#" className="text-emerald-500 font-bold hover:underline">Califícanos</a>
+          </p>
+        </div>
       </motion.div>
     );
   }
@@ -114,7 +187,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50">
       <div className="checkout-layout">
 
         {/* Left Column: Forms */}
@@ -250,10 +323,12 @@ export default function Checkout() {
 
               {/* Show Inline Card Form ONLY if MercadoPago is selected */}
               {formData.paymentMethod === 'mercadopago' && (
-                <MercadoPagoCardForm
-                  amount={total}
-                  onSubmit={(cardData) => processOrder(cardData)}
-                />
+                <div style={{ marginTop: '24px' }}>
+                  <MercadoPagoCardForm
+                    amount={total}
+                    onSubmit={(cardData) => processOrder(cardData)}
+                  />
+                </div>
               )}
 
             </section>
@@ -273,8 +348,9 @@ export default function Checkout() {
         </div>
 
         {/* Right Column: Order Summary */}
-        <div className="checkout-column-right">
+        <div className="checkout-column-right" style={{ position: 'sticky', top: '24px', height: 'fit-content' }}>
           <OrderSummary cart={cart} total={total} />
+          <CheckoutBenefits />
         </div>
 
       </div>

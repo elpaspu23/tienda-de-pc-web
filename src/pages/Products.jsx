@@ -15,11 +15,11 @@ export default function Products() {
   const [categoriesList, setCategoriesList] = useState(categories);
   const [loading, setLoading] = useState(true);
   const [useAPI, setUseAPI] = useState(false);
-  
+
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
     category: searchParams.get('category') || '',
-    priceRange: [0, 2000000],
+    priceRange: [0, 8000000],
     minRating: 0,
     sortBy: 'featured'
   });
@@ -40,7 +40,7 @@ export default function Products() {
           getProducts(),
           getCategories()
         ]);
-        
+
         if (productsData && productsData.length > 0) {
           setProducts(productsData);
           setCategoriesList(categoriesData || categories);
@@ -61,7 +61,7 @@ export default function Products() {
     // Search
     if (filters.search) {
       const search = filters.search.toLowerCase();
-      result = result.filter(p => 
+      result = result.filter(p =>
         p.name?.toLowerCase().includes(search) ||
         p.description?.toLowerCase().includes(search) ||
         p.category?.toLowerCase().includes(search)
@@ -74,8 +74,8 @@ export default function Products() {
     }
 
     // Price
-    result = result.filter(p => 
-      (p.price || 0) >= filters.priceRange[0] && 
+    result = result.filter(p =>
+      (p.price || 0) >= filters.priceRange[0] &&
       (p.price || 0) <= filters.priceRange[1]
     );
 
@@ -109,7 +109,7 @@ export default function Products() {
     setFilters({
       search: '',
       category: '',
-      priceRange: [0, 2000000],
+      priceRange: [0, 8000000],
       minRating: 0,
       sortBy: 'featured'
     });
@@ -122,6 +122,32 @@ export default function Products() {
       currency: 'ARS',
       minimumFractionDigits: 0
     }).format(price);
+  };
+
+  // Hardcoded list to ensure order and completeness
+  const CATEGORY_ORDER = ['Gaming', 'Laptops', 'Phones', 'Audio', 'Monitors', 'Peripherals', 'Tablets', 'Wearables', 'Components'];
+
+  const scrollToCategory = (categoryName) => {
+    // Clear ALL filters to ensure the section is visible
+    setFilters({
+      search: '',
+      category: '',
+      priceRange: [0, 8000000],
+      minRating: 0,
+      sortBy: 'featured'
+    });
+    setSearchParams({}); // Clear URL params too
+
+    // Wait for re-render to scroll
+    setTimeout(() => {
+      const element = document.getElementById(`category-${categoryName}`);
+      if (element) {
+        const headerOffset = 100; // Adjust for sticky header
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      }
+    }, 100);
   };
 
   return (
@@ -145,18 +171,18 @@ export default function Products() {
                 type="text"
                 placeholder="Buscar..."
                 value={filters.search}
-                onChange={(e) => setFilters({...filters, search: e.target.value})}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
               />
             </div>
             <div className="filter-select-wrap">
               <select
-                value={filters.category}
-                onChange={(e) => setFilters({...filters, category: e.target.value})}
+                onChange={(e) => scrollToCategory(e.target.value)}
                 className="filter-select"
+                defaultValue=""
               >
-                <option value="">Categoría</option>
-                {categoriesList.map(cat => (
-                  <option key={cat.id || cat.name} value={cat.name}>{cat.name}</option>
+                <option value="" disabled>Ir a Categoría</option>
+                {CATEGORY_ORDER.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
               <ChevronDown size={14} className="filter-select-arrow" />
@@ -164,7 +190,7 @@ export default function Products() {
             <div className="filter-select-wrap">
               <select
                 value={filters.sortBy}
-                onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+                onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
                 className="filter-select"
               >
                 <option value="featured">Destacados</option>
@@ -205,10 +231,10 @@ export default function Products() {
                 <input
                   type="range"
                   min="0"
-                  max="2000000"
-                  step="50000"
+                  max="8000000"
+                  step="100000"
                   value={filters.priceRange[1]}
-                  onChange={(e) => setFilters({...filters, priceRange: [0, parseInt(e.target.value)]})}
+                  onChange={(e) => setFilters({ ...filters, priceRange: [0, parseInt(e.target.value)] })}
                 />
                 <span className="filter-exp-value">{formatPrice(filters.priceRange[1])}</span>
               </div>
@@ -220,7 +246,7 @@ export default function Products() {
                       key={r}
                       type="button"
                       className={`filter-pill ${filters.minRating === r ? 'active' : ''}`}
-                      onClick={() => setFilters({...filters, minRating: r})}
+                      onClick={() => setFilters({ ...filters, minRating: r })}
                     >
                       {r === 0 ? 'Todos' : `${r}+ ★`}
                     </button>
@@ -236,13 +262,13 @@ export default function Products() {
               {filters.category && (
                 <span className="filter-tag">
                   {filters.category}
-                  <button type="button" onClick={() => setFilters({...filters, category: ''})} aria-label="Quitar"><X size={12} /></button>
+                  <button type="button" onClick={() => setFilters({ ...filters, category: '' })} aria-label="Quitar"><X size={12} /></button>
                 </span>
               )}
               {filters.search && (
                 <span className="filter-tag">
                   "{filters.search}"
-                  <button type="button" onClick={() => setFilters({...filters, search: ''})} aria-label="Quitar"><X size={12} /></button>
+                  <button type="button" onClick={() => setFilters({ ...filters, search: '' })} aria-label="Quitar"><X size={12} /></button>
                 </span>
               )}
             </div>
@@ -263,12 +289,56 @@ export default function Products() {
               <p>No se encontraron productos con esos filtros</p>
               <button onClick={clearFilters}>Limpiar filtros</button>
             </div>
-          ) : (
+          ) : filters.category ? (
+            // Filtered by category — flat grid
             <div className="products-grid">
-            {filteredProducts.map((product, index) => (
-              <ProductCard key={product.id} product={product} index={index} />
-            ))}
+              {filteredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
             </div>
+          ) : (
+            // No category filter — group by category
+            (() => {
+              const categoryLabels = {
+                Gaming: '🎮 Gaming',
+                Laptops: '💻 Laptops',
+                Phones: '📱 Celulares',
+                Audio: '🎧 Audio',
+                Monitors: '🖥️ Monitores',
+                Peripherals: '⌨️ Periféricos',
+                Tablets: '📱 Tablets',
+                Wearables: '⌚ Relojes',
+                Components: '🔧 Componentes'
+              };
+              const grouped = {};
+              filteredProducts.forEach(p => {
+                const cat = p.category || 'Otros';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(p);
+              });
+              // Use global constant for sorting
+              const sortedCategories = CATEGORY_ORDER.filter(c => grouped[c]);
+              // Add any categories not in the predefined order
+              Object.keys(grouped).forEach(c => {
+                if (!sortedCategories.includes(c)) sortedCategories.push(c);
+              });
+
+              let globalIndex = 0;
+              return sortedCategories.map(cat => (
+                <div key={cat} id={`category-${cat}`} className="products-category-section">
+                  <div className="products-category-header">
+                    <h2>{categoryLabels[cat] || cat}</h2>
+                    <span className="products-category-count">{grouped[cat].length} productos</span>
+                  </div>
+                  <div className="products-grid">
+                    {grouped[cat].map((product) => {
+                      const idx = globalIndex++;
+                      return <ProductCard key={product.id} product={product} index={idx} />;
+                    })}
+                  </div>
+                </div>
+              ));
+            })()
           )}
         </main>
       </div>

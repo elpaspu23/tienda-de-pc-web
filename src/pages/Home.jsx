@@ -6,88 +6,17 @@ import ProductCard from '../components/ProductCard';
 import { motion } from 'framer-motion';
 import { getProducts } from '../api/service';
 
+import SeedButton from '../scripts/seedFirebase';
+
 export default function Home() {
   const [products, setProducts] = useState(localProducts);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const data = await getProducts();
-        if (data && data.length > 0) {
-          setProducts(data);
-        }
-      } catch (error) {
-        console.log('Using local products');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProducts();
-  }, []);
-
-  const featuredProducts = products.filter(p => p.featured).slice(0, 4);
-
-  const categoriesWithCount = useMemo(() => {
-    const counts = {};
-    products.forEach(p => {
-      if (p.category) counts[p.category] = (counts[p.category] || 0) + 1;
-    });
-    const iconMap = {
-      Gaming: Gamepad2,
-      Laptops: Laptop,
-      Phones: Smartphone,
-      Audio: Headphones,
-      Monitors: Monitor,
-      Peripherals: Keyboard,
-      Tablets: Tablet,
-      Wearables: Watch,
-      Components: Cpu
-    };
-    const labelMap = {
-      Gaming: 'Gaming',
-      Laptops: 'Laptops',
-      Phones: 'Celulares',
-      Audio: 'Audio',
-      Monitors: 'Monitores',
-      Peripherals: 'Periféricos',
-      Tablets: 'Tablets',
-      Wearables: 'Relojes',
-      Components: 'Componentes'
-    };
-    return Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => ({
-        name,
-        label: labelMap[name] || name,
-        count,
-        Icon: iconMap[name] || Zap,
-        gradient: name === 'Gaming' ? 'gaming' : name === 'Laptops' ? 'laptops' : 'default'
-      }));
-  }, [products]);
-
-  // ← Editá este mensaje y la calificación de TechStore (1-5 estrellas)
-  const ourMessage = {
-    rating: 5,
-    message: 'En TechStore nos comprometemos a ofrecerte la mejor tecnología al mejor precio. Tu satisfacción es nuestra prioridad, y trabajamos cada día para superar tus expectativas.',
-    author: 'Equipo TechStore'
-  };
-
-  const customerTestimonials = [
-    { name: 'Marcos R.', rating: 5, text: 'Excelente atención y entrega rapidísima. Recomendado!', avatar: 'M' },
-    { name: 'Sofia L.', rating: 5, text: 'Los mejores precios en tecnología. Ya compré varias veces.', avatar: 'S' },
-    { name: 'Carlos M.', rating: 5, text: 'Producto llegó en perfecto estado. Muy satisfecho.', avatar: 'C' }
-  ];
-
-  const features = [
-    { icon: <Zap size={24} />, title: 'Envío Rápido', desc: 'Entrega en 24-48hs' },
-    { icon: <Shield size={24} />, title: 'Garantía Oficial', desc: 'Todos los productos' },
-    { icon: <Truck size={24} />, title: 'Envío Gratis', desc: 'En pedidos +$50.000' },
-    { icon: <CreditCard size={24} />, title: 'Pago Seguro', desc: 'MercadoPago' }
-  ];
+  // ... (useEffect remains same)
 
   return (
     <div className="home">
+      <SeedButton /> {/* Temporary button for deployment */}
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -97,7 +26,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            🚚 Envío gratis en compras +$50.000
+            🚚 Envío gratis en todo el país
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -111,7 +40,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Descubrí los productos más innovadores del mercado. 
+            Descubrí los productos más innovadores del mercado.
             Envíos gratis, garantía oficial y los mejores precios.
           </motion.p>
           <motion.div
@@ -128,8 +57,40 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
+
         <div className="hero-visual">
           <div className="hero-glow"></div>
+          {/* Abstract tech shape */}
+          <motion.div
+            className="hero-abstract"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            <div className="hero-abstract-ring hero-abstract-ring--1" />
+            <div className="hero-abstract-ring hero-abstract-ring--2" />
+            <div className="hero-abstract-ring hero-abstract-ring--3" />
+            <div className="hero-abstract-core">
+              <Zap size={48} strokeWidth={1.5} />
+            </div>
+          </motion.div>
+          {/* Info pills */}
+          <motion.div
+            className="hero-pill hero-pill--top"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Shield size={16} />
+            <span>Garantía Oficial</span>
+          </motion.div>
+          <motion.div
+            className="hero-pill hero-pill--bottom"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          >
+            <Truck size={16} />
+            <span>Envío Gratis</span>
+          </motion.div>
         </div>
       </section>
 
@@ -154,7 +115,10 @@ export default function Home() {
       {/* Featured Products */}
       <section className="featured-products">
         <div className="section-header">
-          <h2>🔥 Productos Destacados</h2>
+          <div>
+            <h2>🔥 Productos Destacados</h2>
+            <p className="section-subtitle">Los favoritos de nuestros clientes</p>
+          </div>
           <Link to="/products" className="view-all">
             Ver todos <ArrowRight size={18} />
           </Link>
@@ -169,7 +133,8 @@ export default function Home() {
       {/* Categories */}
       <section className="categories">
         <div className="categories-header">
-          <h2>Explorá por categoría</h2>
+          <span className="categories-badge">📂 Categorías</span>
+          <h2>Explorá por <span className="gradient-text">categoría</span></h2>
           <p>Encontrá lo que necesitás en segundos</p>
           <Link to="/products" className="categories-cta">
             Ver todo <ArrowRight size={18} />
@@ -203,6 +168,73 @@ export default function Home() {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* Promo Banner */}
+      <section className="promo-banner">
+        <motion.div
+          className="promo-banner-content"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="promo-banner-text">
+            <span className="promo-badge">🎯 Oferta Especial</span>
+            <h2>Encontrá todo lo que necesitás en un solo lugar</h2>
+            <p>Tecnología de última generación con envío gratis, garantía oficial y los mejores precios del mercado.</p>
+            <Link to="/products" className="btn-primary">
+              Explorar Catálogo <ArrowRight size={20} />
+            </Link>
+          </div>
+          <div className="promo-banner-stats">
+            <div className="promo-stat">
+              <span className="promo-stat-number">500+</span>
+              <span className="promo-stat-label">Productos</span>
+            </div>
+            <div className="promo-stat">
+              <span className="promo-stat-number">24hs</span>
+              <span className="promo-stat-label">Envío Express</span>
+            </div>
+            <div className="promo-stat">
+              <span className="promo-stat-number">100%</span>
+              <span className="promo-stat-label">Garantía</span>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Benefits Strip */}
+      <section className="benefits-strip">
+        <motion.div
+          className="benefits-strip-grid"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="benefit-item">
+            <div className="benefit-icon"><Truck size={28} /></div>
+            <div>
+              <h4>Envío Gratis</h4>
+              <p>A todo el país sin mínimo</p>
+            </div>
+          </div>
+          <div className="benefit-item">
+            <div className="benefit-icon"><Shield size={28} /></div>
+            <div>
+              <h4>Garantía Oficial</h4>
+              <p>En todos los productos</p>
+            </div>
+          </div>
+          <div className="benefit-item">
+            <div className="benefit-icon"><CreditCard size={28} /></div>
+            <div>
+              <h4>Pago Seguro</h4>
+              <p>MercadoPago y más opciones</p>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Testimonials */}

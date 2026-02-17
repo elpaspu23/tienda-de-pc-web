@@ -12,7 +12,6 @@ import Checkout from './pages/Checkout';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import './index.css';
-import './polish.css';
 
 function App() {
   return (

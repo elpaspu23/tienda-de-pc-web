@@ -19,8 +19,6 @@ export default function OrderSummary({ cart, total }) {
                 border: '1px solid rgba(255,255,255,0.08)',
                 borderRadius: '24px',
                 overflow: 'hidden',
-                position: 'sticky',
-                top: '90px',
             }}>
                 {/* Header */}
                 <div style={{
@@ -37,7 +35,7 @@ export default function OrderSummary({ cart, total }) {
                             <Package size={18} />
                         </div>
                         <h2 style={{
-                            fontFamily: "'Syne', system-ui, sans-serif",
+                            fontFamily: "'Space Grotesk', system-ui, sans-serif",
                             fontSize: '17px', fontWeight: 700, color: '#fff',
                             margin: 0, letterSpacing: '-0.3px',
                         }}>
@@ -86,7 +84,7 @@ export default function OrderSummary({ cart, total }) {
                             {/* Info */}
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <p style={{
-                                    fontFamily: "'Syne', system-ui, sans-serif",
+                                    fontFamily: "'Space Grotesk', system-ui, sans-serif",
                                     fontSize: '13px', fontWeight: 700, color: '#fff',
                                     margin: '0 0 5px',
                                     whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
@@ -102,7 +100,7 @@ export default function OrderSummary({ cart, total }) {
                                         ×{item.quantity}
                                     </span>
                                     <span style={{
-                                        fontFamily: "'Syne', system-ui, sans-serif",
+                                        fontFamily: "'Space Grotesk', system-ui, sans-serif",
                                         fontSize: '14px', fontWeight: 800, color: '#00e5a0',
                                     }}>
                                         ${(item.price * item.quantity).toLocaleString('es-CO')}
@@ -143,13 +141,13 @@ export default function OrderSummary({ cart, total }) {
                         {/* Total final */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 0' }}>
                             <span style={{
-                                fontFamily: "'Syne', system-ui, sans-serif",
+                                fontFamily: "'Space Grotesk', system-ui, sans-serif",
                                 fontSize: '15px', fontWeight: 700, color: '#fff',
                             }}>
                                 Total
                             </span>
                             <span style={{
-                                fontFamily: "'Syne', system-ui, sans-serif",
+                                fontFamily: "'Space Grotesk', system-ui, sans-serif",
                                 fontSize: '26px', fontWeight: 800, color: '#00e5a0',
                                 letterSpacing: '-1px',
                             }}>

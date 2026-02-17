@@ -86,7 +86,7 @@ const S = {
   },
   itemPrice: {
     fontSize: '15px', fontWeight: 700, color: '#00e5a0',
-    fontFamily: "'Syne', system-ui, sans-serif",
+    fontFamily: "'Space Grotesk', system-ui, sans-serif",
   },
   itemActions: {
     display: 'flex', flexDirection: 'column',
@@ -135,7 +135,7 @@ const S = {
   },
   totalLabel: { fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontWeight: 500 },
   totalPrice: {
-    fontFamily: "'Syne', system-ui, sans-serif",
+    fontFamily: "'Space Grotesk', system-ui, sans-serif",
     fontSize: '22px', fontWeight: 800, color: '#00e5a0',
     letterSpacing: '-0.5px',
   },
@@ -144,7 +144,7 @@ const S = {
     padding: '15px', borderRadius: '14px',
     background: 'linear-gradient(135deg, #00e5a0, #00c070)',
     color: '#0a0f1a', fontWeight: 700, fontSize: '15px',
-    fontFamily: "'Syne', system-ui, sans-serif",
+    fontFamily: "'Space Grotesk', system-ui, sans-serif",
     textDecoration: 'none', cursor: 'pointer',
     boxShadow: '0 8px 24px rgba(0,229,160,0.25)',
     transition: 'all 0.2s', border: 'none',

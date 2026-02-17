@@ -22,12 +22,12 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="logo">
-          <Zap className="logo-icon" />
+          <Zap className="logo-icon" size={28} strokeWidth={2.5} />
           <span>TECH<span className="logo-accent">STORE</span></span>
         </Link>
 
         <form className="search-bar" onSubmit={handleSearch}>
-          <Search size={18} className="search-icon" />
+          <Search size={20} className="search-icon" style={{ color: 'var(--text-secondary)' }} />
           <input
             type="text"
             placeholder="Buscar productos..."

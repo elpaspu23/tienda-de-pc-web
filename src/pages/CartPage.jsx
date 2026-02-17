@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Trash2, Plus, Minus, ShieldCheck, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import '../cart-amazon.css';
+import '../index.css';
 
 export default function CartPage() {
     const { cart, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();

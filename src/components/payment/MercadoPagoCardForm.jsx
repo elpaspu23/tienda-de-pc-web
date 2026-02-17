@@ -46,7 +46,14 @@ export default function MercadoPagoCardForm({ amount, onSubmit }) {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
+
+        // Manual validation since we are not using a form submit
+        if (!formData.cardNumber || !formData.cardName || !formData.expiryDate || !formData.cvv || !formData.docNumber || !formData.email) {
+            alert('Por favor completa todos los campos de la tarjeta');
+            return;
+        }
+
         setIsProcessing(true);
         setTimeout(() => { setIsProcessing(false); onSubmit(formData); }, 2000);
     };
@@ -136,7 +143,8 @@ export default function MercadoPagoCardForm({ amount, onSubmit }) {
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* ... (Existing inputs remain same, just logic change) ... */}
 
                     {/* Número de tarjeta */}
                     <div>
@@ -273,7 +281,8 @@ export default function MercadoPagoCardForm({ amount, onSubmit }) {
 
                     {/* Botón */}
                     <button
-                        type="submit"
+                        type="button"
+                        onClick={handleSubmit}
                         className="mp-pay-btn"
                         disabled={isProcessing}
                         style={{
@@ -284,7 +293,7 @@ export default function MercadoPagoCardForm({ amount, onSubmit }) {
                                 : 'linear-gradient(135deg, #00e5a0, #00c070)',
                             border: 'none', borderRadius: '14px',
                             color: '#0a0f1a', fontWeight: 700, fontSize: '15px',
-                            fontFamily: "'Syne', system-ui, sans-serif",
+                            fontFamily: "'Space Grotesk', system-ui, sans-serif",
                             cursor: isProcessing ? 'not-allowed' : 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                             boxShadow: '0 8px 24px rgba(0,229,160,0.25)',
@@ -313,7 +322,7 @@ export default function MercadoPagoCardForm({ amount, onSubmit }) {
                             Procesado por MercadoPago · Encriptación SSL
                         </p>
                     </div>
-                </form>
+                </div>
             </div>
         </>
     );

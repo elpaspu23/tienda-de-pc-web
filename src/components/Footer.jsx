@@ -50,8 +50,8 @@ export default function Footer() {
           <div className="social-links">
             <a href="#" aria-label="Facebook"><Facebook size={20} /></a>
             <a href="#" aria-label="Twitter"><Twitter size={20} /></a>
-            <a href="#" aria-label="Instagram"><Instagram size={20} /></a>
-            <a href="#" aria-label="YouTube"><Youtube size={20} /></a>
+            <a href="https://www.instagram.com/miguebot8888/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+            <a href="https://www.youtube.com/@miguerocha2882" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Youtube size={20} /></a>
           </div>
         </div>
 
